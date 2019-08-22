@@ -31,5 +31,4 @@ optional arguments:
   --g GAMMA          Amount added to every pixel in final image
   --fs SCALE_FACTOR  Factor to scale final image
   --s                Flag for whether or not to show the image
-
 ```
