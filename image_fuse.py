@@ -4,7 +4,24 @@ import numpy as np
 
 def scale_final_image(final_image, resize_factor):
     '''
-    TODO: Document
+    Rescales the final image by a particular factor
+
+    Parameters
+      final_image: an HxWx3 numpy array representing the final fused image
+      resize_factor: a float factor by which the final image will be scaled up
+                      or down by
+
+    Returns
+      new_final_image: a (H*resize_factor) x (W * resize_factor) x 3 numpy array
+                        that is a scaled up or down version of the original
+                        final_image
+
+    Preconditions:
+      resize_factor is greater than 0
+
+    Postconditions:
+      If the image is being upscaled, a cubic interpolation is used. If the
+       image is being downscaled an area interpolation is used.
     '''
     if resize_factor > 1:
         inter = cv2.INTER_CUBIC
@@ -18,20 +35,47 @@ def scale_final_image(final_image, resize_factor):
     return new_final_image
 
 
-def make_images_same_shape(img1, img2):
+def make_images_same_shape(reference_img, moving_img):
     '''
-    TODO: Document
+    Reshapes moving_img so that it is the same shape as reference_img so that
+    they can be accurately fused
+
+    Parameters
+      reference_img: the image that is serving as the sizing template
+      moving_img: the image to be resized so that it is the same shape as
+                   reference_img
+    Returns
+
+    Preconditions
+      Both images are HxWx3 numpy arrays
+
+    Postconditions
     '''
     # Convert Numpy HxW -> CV2 WxH
-    shp = (img1.shape[1], img1.shape[0])
-    new_img2 = np.copy(img1)
-    new_img2 = cv2.resize(img2, shp, new_img2)
-    return new_img2
+    shp = (reference_img.shape[1], reference_img.shape[0])
+    new_img = np.copy(reference_img)
+    new_img = cv2.resize(moving_img, shp, new_img)
+    return new_img
 
 
 def parse_command_line_args():
     '''
-    TODO: Document
+    Parses command line arguments using argparse
+
+    Positional arguments
+      img1_path: a valid path to the first image to be fused
+      img2_path: a valid path to the second image to be fused
+      output_name: the path/name of the final output image (extension included)
+
+    Optional flags
+      --w1: the fusion weight of the first image (float)
+      --w2: the fusion weight of the second image (float)
+      --g: a constant amount to be added to each pixel in the fused image (int)
+      --fs: a factor by which the final image will be scaled (float)
+      --s: flag indicating to show the image after fusion
+
+    Returns
+      results: a Namespace object with the values of the appropriate flags
     '''
     parser = argparse.ArgumentParser(description="Wraps OpenCV's addWeighted()")
     parser.add_argument("img1_path", action="store",
@@ -69,7 +113,6 @@ def main():
     '''
     # Parse command line arguments and read in images
     results = parse_command_line_args()
-    print(results)
     img1 = cv2.imread(results.img1_path)
     img2 = cv2.imread(results.img2_path)
 
