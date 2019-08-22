@@ -52,7 +52,7 @@ def parse_command_line_args():
     parser.add_argument("--g", action="store", dest="gamma",
                         type=int, default=0,
                         help="Amount added to every pixel in final image")
-    parser.add_argument("--fs", action="store", dest="final_scale_factor",
+    parser.add_argument("--fs", action="store", dest="scale_factor",
                         type=float, default=1.0,
                         help="Factor to scale final image")
     parser.add_argument("--s", action="store_true", dest="show_img",
@@ -84,7 +84,7 @@ def main():
 
     # Scale the image if necessary
     if results.final_scale_factor != 1:
-        new_img = scale_final_image(new_img, results.final_scale_factor)
+        new_img = scale_final_image(new_img, results.scale_factor)
 
     # Write the final image and report its shape
     cv2.imwrite(results.output_name, new_img)
